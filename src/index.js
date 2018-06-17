@@ -15,34 +15,31 @@ class App extends Component{
     constructor(props){
         super(props);
         this.state={ videos:[] };
-
+    }
+    
+    componentWillMount() {
         YTSearch({key : API_KEY, term : 'surfboards'} , (videos) => {
             this.setState({ videos });
             //console.log(videos);
         });
-        
+    }
+
+    onSearch = term => {
+        console.log(term);
+        YTSearch({key : API_KEY, term} , videos => {
+            this.setState({ videos });
+            console.log(videos);
+        });
     }
 
     render(){
         return (<div>
-                    <SearchBar />
-                    <VideoList />
+                    <SearchBar onSearch={this.onSearch}/>
+                    <VideoList videos={this.state.videos}/>
                 </div>
             );
     }
 }
-
-// YTSearch({key:API_KEY,term:'surfboards'},function(data){
-//     console.log(data);
-// });
-
-// const App = () => {
-//     return (
-//         <div>
-//             <SearchBar/>
-//         </div>
-//     );
-// }
 
 ReactDOM.render(<App />, document.getElementById('root'));
 registerServiceWorker();

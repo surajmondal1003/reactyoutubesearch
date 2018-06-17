@@ -23,12 +23,15 @@ constructor(props){
     // }
 
     render(){
-        return <div>
-                <input value = {this.state.term} onChange={ event => this.setState({ term : event.target.value })}/>
-               </div>
-        
+        return (
+            <div>
+                <input value = {this.state.term} onChange={this.onInputChange} />
+            </div>
+        );
     }
-    onInputChange(event){
+    onInputChange = (event) => {
+        this.setState({term: event.target.value});
+        this.props.onSearch(event.target.value)
         console.log(event.target.value);
     }
 }
