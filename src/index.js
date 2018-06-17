@@ -15,18 +15,19 @@ class App extends Component{
     constructor(props){
         super(props);
         this.state={ videos:[] };
-
+    }
+    
+    componentWillMount() {
         YTSearch({key : API_KEY, term : 'surfboards'} , (videos) => {
             this.setState({ videos });
             //console.log(videos);
         });
-        
     }
 
     render(){
         return (<div>
                     <SearchBar />
-                    <VideoList />
+                    <VideoList videos={this.state.videos}/>
                 </div>
             );
     }
