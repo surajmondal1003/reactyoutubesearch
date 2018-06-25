@@ -1,5 +1,6 @@
 import React, { Component } from "react";
 import axios from 'axios';
+import ToggleDisplay from 'react-toggle-display';
 
 class SearchBar extends Component {
   constructor(props) {
@@ -7,7 +8,9 @@ class SearchBar extends Component {
 
     this.state = { 
       term: "",
-      suggestions: []
+      suggestions: [],
+      shown:true
+      
    };
     
   }
@@ -16,44 +19,65 @@ class SearchBar extends Component {
     const url = `http://suggestqueries.google.com/complete/search?client=firefox&ds=yt&q=${input}`;
     axios.get(url)
       .then((response) => {
+        //console.log(response);
         this.setState({suggestions: response.data[1]});
-        
+        //const {suggestions = []} = this.state;
+
       });
+  }
+
+  handleClick(suggestion) {
+    this.props.onSearchTermChange(suggestion);
+    this.setState({
+			shown: !this.state.shown
+		});
+
   }
 
   renderVideos = () => {
     const {suggestions = []} = this.state;
 
+    var shown = {
+			display: this.state.shown ? "block" : "none"
+		};
+		
     return suggestions.map((suggestion, index) => {
-        const {suggestion_name} = suggestion;
-
         return (
-            <div key={index} >
-                <h3>{suggestion_name}</h3>
+         
+            <div key={index} className="list-group" onClick={() => this.handleClick(suggestion)} style={ shown }>
+              
+                <li className="list-group-item">{suggestion}</li>
+              
             </div>
+          
         );
     });
 }
   
 
   render() {
+    
     return (
       <div className="search-bar">
         <input
           value={this.state.term}
           onChange={event => this.onInputChange(event.target.value)}
         />
+        
         {this.renderVideos()}
+        
+        
       </div>
     );
   }
 
   onInputChange(term) {
+     
     this.setState({ term });
-    this.props.onSearchTermChange(term);
+    this.setState({shown:true});
     this.getVideos(term);
-
-    //console.log(this.state.suggestions)
+  
+    
   }
 }
 
